@@ -329,17 +329,15 @@ function performQualityTest(config, callback) {
   });
 
   var cleanupAndReport = function() {
-    currentStats.elapsedTimeMs = new Date().getTime() - startMs;
-    callback(undefined, currentStats);
-
     window.clearTimeout(testTimeout);
     bandwidthCalculator.stop();
-
+    currentStats.elapsedTimeMs = new Date().getTime() - startMs;
+    callback(undefined, currentStats);
     callback = function() {};
   };
 
-  // bail out of the test after 30 seconds
-  window.setTimeout(cleanupAndReport, config.timeout);
+  // bail out of the test after config.timeout
+  testTimeout = window.setTimeout(cleanupAndReport, config.timeout);
 
   bandwidthCalculator.start(function(stats) {
     console.log(stats);
